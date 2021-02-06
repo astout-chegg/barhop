@@ -39,6 +39,9 @@ export default class ResultList extends Component {
     }
 
     handleSubmit = (e) => {
+        if (e && e.preventDefault) {
+            e.preventDefault();
+        }
         const bar = {
             name: this.state.name,
             address: this.state.address,
@@ -54,18 +57,20 @@ export default class ResultList extends Component {
             redirect: 'follow',
             body:JSON.stringify(bar),
         })
-        .then(res => {
-            if(!res.ok)
-                return res.json().then(e => Promise.reject(e))
-            /* return res.json */
+        .then((res) => {
+            if (res.ok) {
+                return res.json()
+            }
+            return res.json().then(e => Promise.reject(e))
         })
-        .then(bar => {
+        .then((bar) => {
             this.context.addBar(bar)
         })
-        .catch(error => {
+        .catch((error) => {
             console.error({ error })
             this.setState({ error })
         })
+        return false;
     }
 
     priceRange() {
